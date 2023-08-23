@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tete_a_tete/Auth/auth.dart';
+import 'package:tete_a_tete/controllers/auth.dart';
 import 'package:tete_a_tete/UI/auth_screens/sign_in.dart';
 import 'package:tete_a_tete/UI/util/helpers.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';

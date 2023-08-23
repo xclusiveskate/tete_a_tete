@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:tete_a_tete/Auth/auth.dart';
+import 'package:tete_a_tete/controllers/auth.dart';
 import 'package:tete_a_tete/UI/bottom/home/profile.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';
 

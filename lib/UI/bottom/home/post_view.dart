@@ -137,7 +137,7 @@ class _PostViewState extends State<PostView> {
                         ServiceCall.likePost(
                             userId: widget.currentUser,
                             postId: widget.docRef,
-                            currenUserLike: widget.isLiked);
+                            currentUserLike: widget.isLiked);
                         setState(() {});
                       },
                       icon: widget.isLiked == true

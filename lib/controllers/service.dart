@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tete_a_tete/Modell/comment_model.dart';
 import 'package:tete_a_tete/Modell/post_model.dart';
+import 'package:uuid/uuid.dart';
 
 class ServiceCall {
   static createPost(
@@ -13,8 +14,8 @@ class ServiceCall {
     try {
       final FirebaseFirestore _db = FirebaseFirestore.instance;
       final postRef = _db.collection('posts');
+      final postId = const Uuid().v1();
 
-      final postId = postRef.doc().id;
       PostModel post = PostModel(
           uid: postId,
           datePublished: datePublished,
@@ -24,7 +25,7 @@ class ServiceCall {
           likes: [],
           comments: []);
 
-      await postRef.add(post.toJson());
+      await postRef.doc(postId).set(post.toJson());
     } catch (e) {
       print(e);
     }
@@ -33,11 +34,11 @@ class ServiceCall {
   static likePost(
       {required String userId,
       required String postId,
-      required bool currenUserLike}) {
+      required bool currentUserLike}) {
     print(postId);
     final db = FirebaseFirestore.instance;
     var postToLike = db.collection('posts').doc(postId);
-    if (currenUserLike) {
+    if (currentUserLike) {
       postToLike.update({
         'likes': FieldValue.arrayRemove([userId])
       });

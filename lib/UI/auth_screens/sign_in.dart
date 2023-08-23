@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:tete_a_tete/Auth/auth.dart';
+import 'package:tete_a_tete/controllers/auth.dart';
 import 'package:tete_a_tete/UI/auth_screens/reset_password.dart';
 import 'package:tete_a_tete/UI/auth_screens/sign_up.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';

@@ -264,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                                                     ServiceCall.likePost(
                                                         userId: currentUserId!,
                                                         postId: docRef,
-                                                        currenUserLike:
+                                                        currentUserLike:
                                                             hasTheCurrentUserLiked);
                                                   },
                                                   icon: hasTheCurrentUserLiked
