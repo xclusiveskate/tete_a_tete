@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tete_a_tete/Modell/post_model.dart';
 import 'package:tete_a_tete/Modell/user_model.dart';
-import 'package:tete_a_tete/UI/bottom/connection/user_profile.dart';
 import 'package:tete_a_tete/UI/bottom/home/add_post.dart';
 import 'package:tete_a_tete/UI/bottom/home/drawer.dart';
-import 'package:tete_a_tete/UI/bottom/home/post_view.dart';
-import 'package:tete_a_tete/controllers/service.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';
+import 'package:tete_a_tete/widgets/post_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -147,155 +145,10 @@ class _HomePageState extends State<HomePage> {
                         .map((document) => PostModel.fromFirestore(document))
                         .toList();
                     // List<PostModel> myModel = posts.map((e) => ).toList();
-                    return ListView.builder(
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: posts.length,
-                        itemBuilder: (context, index) {
-                          final docRef = gottenPosts[index].reference.id;
-                          final post = posts[index];
-                          final posterDetails = users.firstWhere(
-                              (element) => element.id == post.userId);
-
-                          final hasTheCurrentUserLiked =
-                              (post.likes as List).contains(currentUserId);
-
-                          return InkWell(
-                            onTap: () {
-                              push(
-                                  context,
-                                  PostView(
-                                    docRef: docRef,
-                                    currentUser: currentUserId!,
-                                    post: post,
-                                    user: posterDetails,
-                                    isLiked: hasTheCurrentUserLiked,
-                                  ));
-                              print(docRef);
-                            },
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  border: Border(
-                                      top: BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 201, 201, 201),
-                                        width: 0.5,
-                                      ),
-                                      bottom: BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 193, 193, 193),
-                                        width: 0.5,
-                                      ))),
-                              child: ListTile(
-                                leading: InkWell(
-                                  onTap: () {
-                                    push(context, const UserProfile());
-                                  },
-                                  child: posterDetails.profileImageUrl == null
-                                      ? CircleAvatar(
-                                          backgroundColor: Colors.greenAccent,
-                                          child: Image.asset(
-                                            'asset/images/avatar.jpg',
-                                            fit: BoxFit.cover,
-                                          ))
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.greenAccent,
-                                          backgroundImage: NetworkImage(
-                                              posterDetails.profileImageUrl!),
-                                        ),
-                                ),
-                                title: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                            '${posterDetails.firstName!} ${posterDetails.lastName!}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text(
-                                          '@${posterDetails.userName!}',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                        const Text("11 Oct"),
-                                        IconButton(
-                                            onPressed: () async {},
-                                            icon: const Icon(Icons.more_vert))
-                                      ],
-                                    ),
-                                    Text(post.content),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              IconButton(
-                                                  onPressed: () {},
-                                                  icon: const Icon(
-                                                      Icons.comment)),
-                                              Text(
-                                                  '${post.comments.length.toString()} ')
-                                            ],
-                                          ),
-                                        ),
-                                        // Container(
-                                        //   child: Row(
-                                        //     children: [
-                                        //       IconButton(
-                                        //           onPressed: () {},
-                                        //           icon: const Icon(
-                                        //               Icons.roller_shades)),
-                                        //       Text(post['comments']
-                                        //           .length
-                                        //           .toString())
-                                        //     ],
-                                        //   ),
-                                        // ),
-                                        Container(
-                                          child: Row(
-                                            children: [
-                                              IconButton(
-                                                  onPressed: () {
-                                                    ServiceCall.likePost(
-                                                        userId: currentUserId!,
-                                                        postId: docRef,
-                                                        currentUserLike:
-                                                            hasTheCurrentUserLiked);
-                                                  },
-                                                  icon: hasTheCurrentUserLiked
-                                                      ? Icon(Icons
-                                                          .favorite_rounded)
-                                                      : Icon(Icons
-                                                          .favorite_outline)),
-                                              Text(
-                                                  '${post.likes!.length.toString()}')
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: [
-                                              IconButton(
-                                                  onPressed: () {},
-                                                  icon:
-                                                      const Icon(Icons.share)),
-                                              const Text('')
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        });
+                    return PostWidget(
+                        posts: posts,
+                        gottenPosts: gottenPosts,
+                        currentUserId: currentUserId);
                   }
                 }),
           ],

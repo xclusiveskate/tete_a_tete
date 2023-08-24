@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:side_sheet_material3/side_sheet_material3.dart';
 
 // Uint8List? myImage;
 OutlinedButton myButton(
@@ -97,10 +98,34 @@ showSnackBar({required BuildContext context, required String message}) {
 bool obscure = true;
 bool isSearching = false;
 
-isDarkMode(BuildContext context) {
-  if (Theme.of(context).brightness == Brightness.light) {
-    return false;
-  } else {
-    return true;
-  }
+Divider divider() {
+  return Divider(
+    height: 1,
+    color: Colors.green.withOpacity(0.5),
+    endIndent: 0,
+    indent: 0,
+  );
+}
+
+sideSheet(
+    {required BuildContext context,
+    required Widget content,
+    required String header,
+    required VoidCallback complete}) async {
+  await showModalSideSheet(
+    context,
+    header: header,
+    body: content, // Put your content widget here
+    addBackIconButton: true,
+    addActions: true,
+    addDivider: true,
+    confirmActionTitle: 'Save',
+    cancelActionTitle: 'Cancel',
+    confirmActionOnPressed: complete,
+
+    // If null, Navigator.pop(context) will used
+    cancelActionOnPressed: () {
+      Navigator.pop(context);
+    },
+  );
 }

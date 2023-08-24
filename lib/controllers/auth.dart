@@ -6,7 +6,6 @@ import 'package:tete_a_tete/Modell/user_model.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;

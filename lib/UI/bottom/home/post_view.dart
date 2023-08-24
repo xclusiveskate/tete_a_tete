@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
-import 'package:side_sheet_material3/side_sheet_material3.dart';
+import 'package:tete_a_tete/Modell/comment_model.dart';
 import 'package:tete_a_tete/Modell/post_model.dart';
 import 'package:tete_a_tete/Modell/user_model.dart';
 import 'package:tete_a_tete/UI/bottom/home/add_comment.dart';
 import 'package:tete_a_tete/controllers/service.dart';
 import 'package:tete_a_tete/UI/util/utils.dart';
+import 'package:uuid/uuid.dart';
 
 class PostView extends StatefulWidget {
   final PostModel post;
@@ -26,8 +28,13 @@ class PostView extends StatefulWidget {
 }
 
 class _PostViewState extends State<PostView> {
+  TextEditingController commentController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    Stream<DocumentSnapshot> commentStream = FirebaseFirestore.instance
+        .collection('posts')
+        .doc(widget.post.uid)
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
           // title: Text(widget.user.userName.toString()),
@@ -115,7 +122,8 @@ class _PostViewState extends State<PostView> {
                         sideSheet(
                             content: Container(),
                             header: "People that liked",
-                            complete: () => null);
+                            complete: () => null,
+                            context: context);
                       },
                       child: Text('${widget.post.likes!.length} Likes')),
                 ],
@@ -159,42 +167,71 @@ class _PostViewState extends State<PostView> {
                         color: Colors.lightGreenAccent,
                       )),
                 ],
-              )
+              ),
+              divider(),
+              StreamBuilder<DocumentSnapshot>(
+                  stream: commentStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text("Error Loading comment"));
+                    }
+                    final data = PostModel.fromFirestore(snapshot.data!);
+                    return ListView.builder(
+                        itemCount: 5,
+                        primary: false,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final comment = data.comments[index];
+                          return Container(
+                            child: Text(comment.comment),
+                          );
+                        });
+                  })
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Divider divider() {
-    return Divider(
-      height: 1,
-      color: Colors.green.withOpacity(0.5),
-      endIndent: 0,
-      indent: 0,
-    );
-  }
-
-  sideSheet(
-      {required Widget content,
-      required String header,
-      required VoidCallback complete}) async {
-    await showModalSideSheet(
-      context,
-      header: header,
-      body: content, // Put your content widget here
-      addBackIconButton: true,
-      addActions: true,
-      addDivider: true,
-      confirmActionTitle: 'Save',
-      cancelActionTitle: 'Cancel',
-      confirmActionOnPressed: complete,
-
-      // If null, Navigator.pop(context) will used
-      cancelActionOnPressed: () {
-        Navigator.pop(context);
-      },
+      persistentFooterButtons: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+                flex: 4,
+                child: TextField(
+                  decoration:
+                      InputDecoration(hintText: "Comment on the above post"),
+                  controller: commentController,
+                )),
+            Expanded(
+                flex: 1,
+                child: OutlinedButton(
+                    onPressed: () {
+                      if (commentController.text.isNotEmpty) {
+                        try {
+                          final uid = Uuid().v1();
+                          FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(widget.post.uid)
+                              .update({
+                            "comment": FieldValue.arrayUnion([
+                              Comment(
+                                  commentId: uid,
+                                  comment: commentController.text,
+                                  userId: widget.currentUser,
+                                  likes: null)
+                            ])
+                          });
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                    },
+                    child: Text("Comment"))),
+          ],
+        )
+      ],
     );
   }
 }

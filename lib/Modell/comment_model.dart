@@ -4,10 +4,12 @@
 //collection
 class Comment {
   final String commentId;
+  final String comment;
   final String userId;
-  final List likes;
+  final List? likes;
   Comment({
     required this.commentId,
+    required this.comment,
     required this.userId,
     required this.likes,
   });
@@ -15,6 +17,7 @@ class Comment {
   Map<String, Object?> toJson() {
     return {
       'commentId': commentId,
+      'comment': comment,
       'userId': userId,
       'likes': likes,
     };
@@ -23,6 +26,7 @@ class Comment {
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       commentId: json['commentId'] as String,
+      comment: json['comment'] as String,
       userId: json['userId'] as String,
       likes: List.from(json['likes']),
     );
